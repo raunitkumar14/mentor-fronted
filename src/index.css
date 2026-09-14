@@ -138,6 +138,11 @@ html {
   max-width: 180px;
 }
 
+.field select option {
+  color: var(--ink);
+  background: var(--ground);
+}
+
 .field select:hover,
 .field input:hover {
   border-bottom-color: var(--gray-1);

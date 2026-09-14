@@ -7,6 +7,16 @@ function todayMinus(days) {
   return d.toISOString().slice(0, 10);
 }
 
+function formatDuration(totalSeconds) {
+  const s = Math.round(totalSeconds || 0);
+  const h = Math.floor(s / 3600);
+  const m = Math.floor((s % 3600) / 60);
+  const sec = s % 60;
+  if (h > 0) return `${h}h ${m}m`;
+  if (m > 0) return `${m}m ${sec}s`;
+  return `${sec}s`;
+}
+
 export default function App() {
   const [owners, setOwners] = useState([]);
   const [ownerId, setOwnerId] = useState("");
@@ -103,6 +113,18 @@ export default function App() {
             <div className="kpi-card">
               <span className="kpi-value">{metrics.maxCallsOnLead}</span>
               <span className="kpi-label">Max Calls On One Lead</span>
+            </div>
+            <div className="kpi-card">
+              <span className="kpi-value">
+                {formatDuration(metrics.totalCallDurationSec)}
+              </span>
+              <span className="kpi-label">Total Call Duration</span>
+            </div>
+            <div className="kpi-card">
+              <span className="kpi-value">
+                {formatDuration(metrics.avgCallDurationSec)}
+              </span>
+              <span className="kpi-label">Avg Call Duration</span>
             </div>
           </div>
 

@@ -129,57 +129,59 @@ export default function App() {
             ))}
           </div>
 
-          <section>
-            <h2 className="section-title">Calls per Lead</h2>
-            <p className="hint">
-              How many times each lead was called — one row per lead, not per
-              call, so a lead called 19 times still counts once.
-            </p>
-            <div className="dist">
-              {["0", "1", "2", "3+"].map((bucket) => {
-                const count = metrics.callsPerLeadDistribution[bucket] ?? 0;
-                const pct = metrics.totalLeads ? (count / metrics.totalLeads) * 100 : 0;
-                return (
-                  <div className="dist-row" key={bucket}>
-                    <span className="dist-label">{bucket}</span>
-                    <div className="dist-track">
-                      <div
-                        className="dist-fill"
-                        style={{ width: `${pct}%`, opacity: BUCKET_OPACITY[bucket] }}
-                      />
+          <div className="panels">
+            <section>
+              <h2 className="section-title">Calls per Lead</h2>
+              <p className="hint">
+                How many times each lead was called — one row per lead, not per
+                call, so a lead called 19 times still counts once.
+              </p>
+              <div className="dist">
+                {["0", "1", "2", "3+"].map((bucket) => {
+                  const count = metrics.callsPerLeadDistribution[bucket] ?? 0;
+                  const pct = metrics.totalLeads ? (count / metrics.totalLeads) * 100 : 0;
+                  return (
+                    <div className="dist-row" key={bucket}>
+                      <span className="dist-label">{bucket}</span>
+                      <div className="dist-track">
+                        <div
+                          className="dist-fill"
+                          style={{ width: `${pct}%`, opacity: BUCKET_OPACITY[bucket] }}
+                        />
+                      </div>
+                      <span className="dist-count num">
+                        {count} ({pct.toFixed(1)}%)
+                      </span>
                     </div>
-                    <span className="dist-count num">
-                      {count} ({pct.toFixed(1)}%)
-                    </span>
-                  </div>
-                );
-              })}
-            </div>
-          </section>
+                  );
+                })}
+              </div>
+            </section>
 
-          <section>
-            <h2 className="section-title">Outcome Breakdown</h2>
-            {outcomeRows.length === 0 ? (
-              <p className="empty">No calls recorded in this range.</p>
-            ) : (
-              <table>
-                <thead>
-                  <tr>
-                    <th>Outcome</th>
-                    <th>Count</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {outcomeRows.map(([outcome, count]) => (
-                    <tr key={outcome}>
-                      <td>{humanizeOutcome(outcome)}</td>
-                      <td className="num">{count}</td>
+            <section>
+              <h2 className="section-title">Outcome Breakdown</h2>
+              {outcomeRows.length === 0 ? (
+                <p className="empty">No calls recorded in this range.</p>
+              ) : (
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Outcome</th>
+                      <th>Count</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-            )}
-          </section>
+                  </thead>
+                  <tbody>
+                    {outcomeRows.map(([outcome, count]) => (
+                      <tr key={outcome}>
+                        <td>{humanizeOutcome(outcome)}</td>
+                        <td className="num">{count}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              )}
+            </section>
+          </div>
         </>
       )}
     </main>

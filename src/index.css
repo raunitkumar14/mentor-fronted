@@ -80,7 +80,7 @@ html {
 }
 
 .page {
-  max-width: 860px;
+  max-width: 1320px;
   margin: 0 auto;
   padding: var(--space-5) var(--space-4) var(--space-6);
 }
@@ -182,7 +182,9 @@ html {
 
 .stat-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  /* Wide desktop: all nine KPIs read as one ledger row — a manager
+     scans left to right instead of down a tall stack of cards. */
+  grid-template-columns: repeat(9, 1fr);
   border-top: 1px solid var(--gray-2);
   border-left: 1px solid var(--gray-2);
   margin-bottom: var(--space-6);
@@ -228,8 +230,24 @@ html {
   max-width: 60ch;
 }
 
-section + section {
-  margin-top: var(--space-6);
+/* ---------- panels (calls-per-lead + outcome, side by side) ---------- */
+
+.panels {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+.panels > section {
+  padding: 0 var(--space-5);
+}
+
+.panels > section:first-child {
+  padding-left: 0;
+  border-right: 1px solid var(--gray-2);
+}
+
+.panels > section:last-child {
+  padding-right: 0;
 }
 
 /* ---------- calls-per-lead distribution ---------- */
@@ -304,6 +322,35 @@ th:last-child {
 }
 
 /* ---------- responsive ---------- */
+
+@media (max-width: 1180px) {
+  .stat-grid {
+    grid-template-columns: repeat(5, 1fr);
+  }
+}
+
+@media (max-width: 900px) {
+  .stat-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  /* Panels stop fitting comfortably side by side — stack them and
+     swap the vertical divider for the page's usual horizontal one. */
+  .panels {
+    grid-template-columns: 1fr;
+  }
+
+  .panels > section {
+    padding: 0;
+  }
+
+  .panels > section:first-child {
+    border-right: none;
+    border-bottom: 1px solid var(--gray-2);
+    padding-bottom: var(--space-5);
+    margin-bottom: var(--space-5);
+  }
+}
 
 @media (max-width: 640px) {
   .stat-grid {

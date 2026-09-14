@@ -116,7 +116,11 @@ The palette is deliberately narrow: ink, ground, two grays, and one accent — n
 
 ## Layout
 
-Single column, max-width 860px, centered, with generous outer padding (40px top, 24px sides, 64px bottom) — this is a one-view instrument, not a multi-column dashboard. Vertical rhythm runs on the 4/8/16/24/40/64px spacing scale; sections stack with a full 64px gap between them, while related elements (a stat's label and value) sit 4px apart. The KPI grid is a fixed 3-column layout (2 columns under 640px, 1 column under 420px) — it reflows column count responsively but the stat order itself never changes, preserving each KPI's position within the sequence.
+Single centered column, max-width 1320px, with generous outer padding (40px top, 24px sides, 64px bottom) — wide on desktop rather than a narrow portrait document, but still one reading path, not a multi-column app shell. Vertical rhythm runs on the 4/8/16/24/40/64px spacing scale; related elements (a stat's label and value) sit 4px apart.
+
+The KPI grid reads as one full-width "ledger row" on desktop — all nine stats in a single 9-column strip — stepping down through 5 columns (≤1180px), 3 columns (≤900px), 2 columns (≤640px), to 1 column (≤420px). The stat order itself never changes at any width; only the column count reflows, preserving each KPI's relative position in the sequence.
+
+Below the KPI row, the calls-per-lead histogram and the outcome table sit in a two-panel grid (`.panels`, two equal columns split by a vertical hairline) so a manager reads both breakdowns of the same call data side by side instead of scrolling past one to reach the other. Below 900px — the same breakpoint where the KPI row drops to 3 columns — panels stack to a single column and the vertical hairline becomes a horizontal one, matching the page's usual divider language rather than introducing a new one.
 
 ## Elevation & Depth
 
@@ -147,6 +151,9 @@ This system has no card component. The KPI grid is a hairline-ruled table of cel
 
 ### Navigation
 No navigation exists — this is a single, un-routed view. The topbar holds only the page heading and the filter row (owner select, start/end date, Load button), separated from the body by one hairline.
+
+### Panels (two-up comparison layout)
+The system's one multi-column content pattern: two equal-width regions (`.panels > section`) separated by a single 1px vertical hairline, 40px padding on the inside edge of each. Reserved for content meant to be compared side by side, not for arbitrary two-column packing — currently the calls-per-lead histogram and the outcome table, both readings of the same underlying calls. Collapses to a stacked single column with a horizontal hairline below 900px; never crops or scrolls a panel independently.
 
 ### The Calls-per-Lead Histogram (signature component)
 A horizontal bar-per-bucket histogram (buckets: 0 / 1 / 2 / 3+ calls) built from a single accent color at variable opacity rather than a color ramp or a second hue — bar length encodes the count's share, opacity encodes a second signal (rarer, more-called buckets read visually bolder even at a short bar length: 0.35 / 0.55 / 0.75 / 1.0 across the four buckets). Track is hairline-gray, 6px tall, no radius.

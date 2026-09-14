@@ -1,3 +1,9 @@
 node_modules/
 dist/
 .env
+
+# Impeccable design-skill working evidence — regenerated each pass,
+# not durable design record (that's DESIGN.md + .impeccable/surfaces/).
+.impeccable/review/
+.impeccable/mocks/
+.impeccable/build/

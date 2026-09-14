@@ -17,6 +17,32 @@ function formatDuration(totalSeconds) {
   return `${sec}s`;
 }
 
+function humanizeOutcome(outcome) {
+  return outcome
+    .split("_")
+    .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+    .join(" ");
+}
+
+// Bucket length already carries magnitude; opacity carries a second signal —
+// the rarer, more-called buckets (the anomaly worth a manager's attention)
+// read bolder even though their bars are short.
+const BUCKET_OPACITY = { "0": 0.35, "1": 0.55, "2": 0.75, "3+": 1 };
+
+// Fixed order/position — a manager should be able to find "connect rate"
+// in the same grid cell every time, not hunt for it.
+const STATS = [
+  { key: "totalLeads", label: "Total Leads", format: (m) => m.totalLeads },
+  { key: "leadsWithCalls", label: "With Calls", format: (m) => m.leadsWithCalls },
+  { key: "leadsWithNoCall", label: "No Call", format: (m) => m.leadsWithNoCall },
+  { key: "connectRatePct", label: "Connect Rate", format: (m) => `${m.connectRatePct}%` },
+  { key: "totalCallAttempts", label: "Total Call Attempts", format: (m) => m.totalCallAttempts },
+  { key: "avgCallsPerContactedLead", label: "Avg Calls / Lead", format: (m) => `${m.avgCallsPerContactedLead}x` },
+  { key: "maxCallsOnLead", label: "Max On One Lead", format: (m) => m.maxCallsOnLead },
+  { key: "totalCallDurationSec", label: "Total Call Duration", format: (m) => formatDuration(m.totalCallDurationSec) },
+  { key: "avgCallDurationSec", label: "Avg Call Duration", format: (m) => formatDuration(m.avgCallDurationSec) },
+];
+
 export default function App() {
   const [owners, setOwners] = useState([]);
   const [ownerId, setOwnerId] = useState("");
@@ -50,127 +76,111 @@ export default function App() {
     }
   }
 
+  const outcomeRows = metrics
+    ? Object.entries(metrics.outcomeBreakdown).sort((a, b) => b[1] - a[1])
+    : [];
+
   return (
     <main className="page">
-      <h1>CRM Call-Coverage Dashboard</h1>
+      <header className="topbar">
+        <h1>Call Coverage</h1>
+        <div className="filters">
+          <label className="field">
+            <span>Owner</span>
+            <select value={ownerId} onChange={(e) => setOwnerId(e.target.value)}>
+              {owners.map((o) => (
+                <option key={o.id} value={o.id}>
+                  {o.name}
+                </option>
+              ))}
+            </select>
+          </label>
 
-      <section className="filters">
-        <label>
-          Owner
-          <select value={ownerId} onChange={(e) => setOwnerId(e.target.value)}>
-            {owners.map((o) => (
-              <option key={o.id} value={o.id}>
-                {o.name}
-              </option>
-            ))}
-          </select>
-        </label>
+          <label className="field">
+            <span>Start</span>
+            <input type="date" value={start} onChange={(e) => setStart(e.target.value)} />
+          </label>
 
-        <label>
-          Start
-          <input type="date" value={start} onChange={(e) => setStart(e.target.value)} />
-        </label>
+          <label className="field">
+            <span>End</span>
+            <input type="date" value={end} onChange={(e) => setEnd(e.target.value)} />
+          </label>
 
-        <label>
-          End
-          <input type="date" value={end} onChange={(e) => setEnd(e.target.value)} />
-        </label>
+          <button className="btn" onClick={handleLoad} disabled={!ownerId || loading}>
+            {loading ? "Loading…" : "Load"}
+          </button>
+        </div>
+      </header>
 
-        <button onClick={handleLoad} disabled={!ownerId || loading}>
-          {loading ? "Loading…" : "Load"}
-        </button>
-      </section>
+      {error && <p className="state state-error">Error: {error}</p>}
 
-      {error && <p className="error">Error: {error}</p>}
+      {!metrics && !loading && !error && (
+        <p className="state">Pick an owner and date range, then Load.</p>
+      )}
 
       {metrics && (
-        <section className="results">
-          <div className="kpi-grid">
-            <div className="kpi-card">
-              <span className="kpi-value">{metrics.totalLeads}</span>
-              <span className="kpi-label">Total Leads</span>
-            </div>
-            <div className="kpi-card">
-              <span className="kpi-value">{metrics.leadsWithCalls}</span>
-              <span className="kpi-label">Leads With Calls</span>
-            </div>
-            <div className="kpi-card">
-              <span className="kpi-value">{metrics.leadsWithNoCall}</span>
-              <span className="kpi-label">Leads With No Call</span>
-            </div>
-            <div className="kpi-card">
-              <span className="kpi-value">{metrics.connectRatePct}%</span>
-              <span className="kpi-label">Connect Rate</span>
-            </div>
-            <div className="kpi-card">
-              <span className="kpi-value">{metrics.totalCallAttempts}</span>
-              <span className="kpi-label">Total Call Attempts</span>
-            </div>
-            <div className="kpi-card">
-              <span className="kpi-value">{metrics.avgCallsPerContactedLead}</span>
-              <span className="kpi-label">Avg Calls / Contacted Lead</span>
-            </div>
-            <div className="kpi-card">
-              <span className="kpi-value">{metrics.maxCallsOnLead}</span>
-              <span className="kpi-label">Max Calls On One Lead</span>
-            </div>
-            <div className="kpi-card">
-              <span className="kpi-value">
-                {formatDuration(metrics.totalCallDurationSec)}
-              </span>
-              <span className="kpi-label">Total Call Duration</span>
-            </div>
-            <div className="kpi-card">
-              <span className="kpi-value">
-                {formatDuration(metrics.avgCallDurationSec)}
-              </span>
-              <span className="kpi-label">Avg Call Duration</span>
-            </div>
+        <>
+          <div className="stat-grid">
+            {STATS.map((s) => (
+              <div className="stat" key={s.key}>
+                <span className="stat-label">{s.label}</span>
+                <span className="stat-value num">{s.format(metrics)}</span>
+              </div>
+            ))}
           </div>
 
-          <h2>Calls per Lead</h2>
-          <p className="hint">
-            How many times each lead was called — collapses to one row per
-            lead, not per call, so a lead called 19 times still counts once.
-          </p>
-          <div className="dist">
-            {["0", "1", "2", "3+"].map((bucket) => {
-              const count = metrics.callsPerLeadDistribution[bucket] ?? 0;
-              const pct = metrics.totalLeads
-                ? (count / metrics.totalLeads) * 100
-                : 0;
-              return (
-                <div className="dist-row" key={bucket}>
-                  <span className="dist-label">{bucket} calls</span>
-                  <div className="dist-bar">
-                    <div className="dist-fill" style={{ width: `${pct}%` }} />
+          <section>
+            <h2 className="section-title">Calls per Lead</h2>
+            <p className="hint">
+              How many times each lead was called — one row per lead, not per
+              call, so a lead called 19 times still counts once.
+            </p>
+            <div className="dist">
+              {["0", "1", "2", "3+"].map((bucket) => {
+                const count = metrics.callsPerLeadDistribution[bucket] ?? 0;
+                const pct = metrics.totalLeads ? (count / metrics.totalLeads) * 100 : 0;
+                return (
+                  <div className="dist-row" key={bucket}>
+                    <span className="dist-label">{bucket}</span>
+                    <div className="dist-track">
+                      <div
+                        className="dist-fill"
+                        style={{ width: `${pct}%`, opacity: BUCKET_OPACITY[bucket] }}
+                      />
+                    </div>
+                    <span className="dist-count num">
+                      {count} ({pct.toFixed(1)}%)
+                    </span>
                   </div>
-                  <span className="dist-count">
-                    {count} ({pct.toFixed(1)}%)
-                  </span>
-                </div>
-              );
-            })}
-          </div>
+                );
+              })}
+            </div>
+          </section>
 
-          <h2>Outcome Breakdown</h2>
-          <table>
-            <thead>
-              <tr>
-                <th>Outcome</th>
-                <th>Count</th>
-              </tr>
-            </thead>
-            <tbody>
-              {Object.entries(metrics.outcomeBreakdown).map(([outcome, count]) => (
-                <tr key={outcome}>
-                  <td>{outcome}</td>
-                  <td>{count}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </section>
+          <section>
+            <h2 className="section-title">Outcome Breakdown</h2>
+            {outcomeRows.length === 0 ? (
+              <p className="empty">No calls recorded in this range.</p>
+            ) : (
+              <table>
+                <thead>
+                  <tr>
+                    <th>Outcome</th>
+                    <th>Count</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {outcomeRows.map(([outcome, count]) => (
+                    <tr key={outcome}>
+                      <td>{humanizeOutcome(outcome)}</td>
+                      <td className="num">{count}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
+          </section>
+        </>
       )}
     </main>
   );

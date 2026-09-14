@@ -1,0 +1,129 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-09-14T00:00:00Z",
+  "title": "Design System: Call Coverage",
+  "extensions": {
+    "colorMeta": {
+      "ink": {
+        "role": "neutral",
+        "displayName": "Ink",
+        "canonical": "#0a0a0a",
+        "tonalRamp": ["#0a0a0a", "#1c1c1c", "#333333", "#4d4d4d", "#6b6b6b", "#9a9a9a", "#cfcfcf", "#f2f2f0"]
+      },
+      "ground": {
+        "role": "neutral",
+        "displayName": "Ground",
+        "canonical": "#ffffff",
+        "tonalRamp": ["#0a0a0a", "#262624", "#4d4d4d", "#6b6b6b", "#9a9a97", "#cfcfcf", "#e3e3e0", "#ffffff"]
+      },
+      "gray-quiet": {
+        "role": "neutral",
+        "displayName": "Gray, Quiet",
+        "canonical": "#6b6b6b",
+        "tonalRamp": ["#1a1a1a", "#2e2e2e", "#454545", "#5c5c5c", "#6b6b6b", "#8a8a8a", "#b0b0b0", "#d8d8d8"]
+      },
+      "gray-hairline": {
+        "role": "neutral",
+        "displayName": "Gray, Hairline",
+        "canonical": "#e3e3e0",
+        "tonalRamp": ["#262624", "#3a3a37", "#54544f", "#70706a", "#9a9a97", "#c0c0bc", "#e3e3e0", "#f5f5f3"]
+      },
+      "accent": {
+        "role": "primary",
+        "displayName": "Signal Orange",
+        "canonical": "#c2410c",
+        "tonalRamp": ["#3d1404", "#5c1f07", "#84300c", "#a8390d", "#c2410c", "#e0651f", "#f0894a", "#fb923c"]
+      },
+      "accent-ink": {
+        "role": "neutral",
+        "displayName": "Accent-Ink",
+        "canonical": "#ffffff",
+        "tonalRamp": ["#0a0a0a", "#262624", "#4d4d4d", "#6b6b6b", "#9a9a97", "#cfcfcf", "#e3e3e0", "#ffffff"]
+      }
+    },
+    "typographyMeta": {
+      "headline": { "displayName": "Headline", "purpose": "The single page title, 'Call Coverage', in the topbar. Appears once per view." },
+      "title": { "displayName": "Section Title", "purpose": "Section headers dividing the KPI grid from the histogram and the outcome table." },
+      "value": { "displayName": "Value", "purpose": "Every KPI figure and count — tabular mono, the largest text besides the headline." },
+      "body": { "displayName": "Body", "purpose": "Filter fields, table cells, state and empty messages." },
+      "label": { "displayName": "Label", "purpose": "Small uppercase headers over stat values and table columns." }
+    },
+    "shadows": [],
+    "breakpoints": [
+      { "name": "sm", "value": "640px" },
+      { "name": "xs", "value": "420px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "The single interactive button in the system (Load). Ink-filled, ground text, the only rounded shape.",
+      "html": "<button class=\"ds-btn-primary\">Load</button>",
+      "css": ".ds-btn-primary { border: 1px solid #0a0a0a; background: #0a0a0a; color: #ffffff; padding: 8px 16px; border-radius: 4px; font-weight: 600; font-size: 0.85rem; cursor: pointer; transition: opacity 0.1s ease-out; } .ds-btn-primary:hover { opacity: 0.82; } .ds-btn-primary:focus-visible { outline: 2px solid #c2410c; outline-offset: 2px; } .ds-btn-primary:disabled { border-color: #e3e3e0; background: #e3e3e0; color: #6b6b6b; cursor: not-allowed; }"
+    },
+    {
+      "name": "Filter Field",
+      "kind": "input",
+      "refersTo": "stat-cell",
+      "description": "Underline-only text/select field used for owner and date-range filters. No box, no radius.",
+      "html": "<label class=\"ds-field\"><span>Start</span><input type=\"date\" value=\"2026-08-15\" /></label>",
+      "css": ".ds-field { display: flex; flex-direction: column; gap: 4px; } .ds-field span { font-size: 0.75rem; color: #6b6b6b; } .ds-field input { background: transparent; color: #0a0a0a; caret-color: #c2410c; border: none; border-bottom: 1px solid #e3e3e0; border-radius: 0; padding: 4px 0; font-family: ui-monospace, 'SF Mono', Menlo, monospace; font-size: 0.9rem; } .ds-field input:hover { border-bottom-color: #6b6b6b; } .ds-field input:focus-visible { outline: 2px solid #c2410c; outline-offset: 2px; }"
+    },
+    {
+      "name": "KPI Stat Cell",
+      "kind": "card",
+      "refersTo": "stat-cell",
+      "description": "Hairline-ruled grid cell replacing a boxed card. Holds one label + one tabular-mono value at a fixed grid position.",
+      "html": "<div class=\"ds-stat\"><span class=\"ds-stat-label\">Connect Rate</span><span class=\"ds-stat-value\">14.2%</span></div>",
+      "css": ".ds-stat { border-right: 1px solid #e3e3e0; border-bottom: 1px solid #e3e3e0; padding: 16px; display: flex; flex-direction: column; gap: 4px; } .ds-stat-label { font-size: 0.72rem; color: #6b6b6b; text-transform: uppercase; letter-spacing: 0.03em; } .ds-stat-value { font-family: ui-monospace, 'SF Mono', Menlo, monospace; font-variant-numeric: tabular-nums; font-size: 1.5rem; font-weight: 500; }"
+    },
+    {
+      "name": "Histogram Bar Row",
+      "kind": "custom",
+      "refersTo": null,
+      "description": "One row of the calls-per-lead distribution: bucket label, single-accent bar at bucket-specific opacity, tabular count.",
+      "html": "<div class=\"ds-dist-row\"><span class=\"ds-dist-label\">3+</span><div class=\"ds-dist-track\"><div class=\"ds-dist-fill\" style=\"width:22%;opacity:1\"></div></div><span class=\"ds-dist-count\">42 (22.0%)</span></div>",
+      "css": ".ds-dist-row { display: grid; grid-template-columns: 44px 1fr 100px; align-items: center; gap: 16px; } .ds-dist-label { font-family: ui-monospace, 'SF Mono', Menlo, monospace; font-size: 0.8rem; color: #6b6b6b; } .ds-dist-track { background: #e3e3e0; height: 6px; } .ds-dist-fill { background: #c2410c; height: 100%; } .ds-dist-count { text-align: right; font-size: 0.82rem; color: #6b6b6b; font-variant-numeric: tabular-nums; }"
+    },
+    {
+      "name": "Outcome Table",
+      "kind": "custom",
+      "refersTo": null,
+      "description": "Two-column outcome-breakdown table: hairline row dividers, uppercase quiet headers, right-aligned tabular counts.",
+      "html": "<table class=\"ds-table\"><thead><tr><th>Outcome</th><th>Count</th></tr></thead><tbody><tr><td>Not Answered</td><td class=\"ds-num\">61</td></tr></tbody></table>",
+      "css": ".ds-table { width: 100%; border-collapse: collapse; font-size: 0.9rem; } .ds-table th, .ds-table td { text-align: left; padding: 8px 0; border-bottom: 1px solid #e3e3e0; } .ds-table th { font-size: 0.72rem; color: #6b6b6b; text-transform: uppercase; letter-spacing: 0.03em; font-weight: 500; } .ds-table td:last-child, .ds-table th:last-child { text-align: right; } .ds-num { font-family: ui-monospace, 'SF Mono', Menlo, monospace; font-variant-numeric: tabular-nums; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Ledger, Not the Dashboard",
+    "overview": "This is an internal coverage instrument, not a SaaS dashboard. It refuses the boxed-card-with-soft-shadow pattern that category defaults to: no card ever gets a background tint, a border-radius above 4px, or a shadow. Instead the page reads like a ledger — hairline rules divide every region, type weight and one accent color carry all hierarchy, and every metric renders in tabular monospace so a manager can scan a column of numbers the way they'd scan a spreadsheet, not a tile grid.\n\nThe palette is intentionally starved: near-black ink on white ground (inverted in dark mode), two grays for quiet text and dividers, and exactly one accent used for the histogram fill, focus rings, selection, the primary button, and the error state — never a second hue anywhere, including error, which borrows the same accent rather than introducing red. Density is high and confident; nothing is padded out to look important, and the KPI grid holds nine metrics in fixed positions so a manager builds spatial memory of where each figure lives across repeated reviews.",
+    "keyCharacteristics": [
+      "Hairline dividers replace cards and shadows everywhere",
+      "Exactly one accent (burnt orange / light, warm amber / dark), no incidental colors",
+      "Every metric value is tabular-mono; every label is sans",
+      "Fixed-position KPI grid — same cell holds the same stat every load",
+      "Radius is capped at 4px and reserved for the single interactive button"
+    ],
+    "rules": [
+      { "name": "The One Accent Rule", "body": "Exactly one accent color exists in this system. It is never duplicated as a second \"error red\" or \"success green\" — the error state (`.state-error`) reuses the same accent token. A screen that introduces a second hue for status is off-system.", "section": "colors" },
+      { "name": "The No-Fill Rule", "body": "Ink and ground never swap roles as decorative background blocks. Ink appears as text or as the single filled button; ground is the page surface everywhere else. Gray-hairline is a divider color, not a surface tint — cards are never given a `background: gray` treatment.", "section": "colors" },
+      { "name": "The Tabular Numerals Rule", "body": "Every rendered metric — KPI values, histogram counts/percentages, outcome-table counts — carries `font-variant-numeric: tabular-nums` in the mono stack via the shared `.num` class. A number that isn't monospaced is a bug, not a style choice.", "section": "typography" },
+      { "name": "The Hairline-Only Rule", "body": "All separation — between the topbar and body, between stat cells, between table rows — is a single 1px border in the hairline-gray token. No double borders, no gradient fades standing in for shadows, no blurred glows.", "section": "elevation" }
+    ],
+    "dos": [
+      "Do render every metric value — KPI, histogram count, table count — through the `.num` class (mono, tabular-nums). A number in the sans body font is off-system.",
+      "Do keep the KPI grid's stat order fixed across reloads; a manager's spatial memory of \"connect rate is top-right\" is a stated product requirement, not incidental.",
+      "Do use the single accent for every signal color, including error states — never introduce a second hue for status.",
+      "Do separate regions with a 1px hairline border in `gray-hairline`; that is the system's only depth device."
+    ],
+    "donts": [
+      "Don't add `box-shadow` anywhere. This build ships with zero shadows; a shadowed card is the exact pattern the system was built to refuse.",
+      "Don't give any surface a fill or radius beyond the single 4px button. Stat cells, inputs, and the histogram track are all hard-cornered and unfilled.",
+      "Don't introduce a second accent color, a status-color palette, or any color outside ink/ground/two grays/one accent.",
+      "Don't style a metric value in the sans body font — every number is mono with tabular figures, no exceptions."
+    ]
+  }
+}
+</content>

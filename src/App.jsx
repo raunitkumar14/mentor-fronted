@@ -92,6 +92,43 @@ export default function App() {
               <span className="kpi-value">{metrics.connectRatePct}%</span>
               <span className="kpi-label">Connect Rate</span>
             </div>
+            <div className="kpi-card">
+              <span className="kpi-value">{metrics.totalCallAttempts}</span>
+              <span className="kpi-label">Total Call Attempts</span>
+            </div>
+            <div className="kpi-card">
+              <span className="kpi-value">{metrics.avgCallsPerContactedLead}</span>
+              <span className="kpi-label">Avg Calls / Contacted Lead</span>
+            </div>
+            <div className="kpi-card">
+              <span className="kpi-value">{metrics.maxCallsOnLead}</span>
+              <span className="kpi-label">Max Calls On One Lead</span>
+            </div>
+          </div>
+
+          <h2>Calls per Lead</h2>
+          <p className="hint">
+            How many times each lead was called — collapses to one row per
+            lead, not per call, so a lead called 19 times still counts once.
+          </p>
+          <div className="dist">
+            {["0", "1", "2", "3+"].map((bucket) => {
+              const count = metrics.callsPerLeadDistribution[bucket] ?? 0;
+              const pct = metrics.totalLeads
+                ? (count / metrics.totalLeads) * 100
+                : 0;
+              return (
+                <div className="dist-row" key={bucket}>
+                  <span className="dist-label">{bucket} calls</span>
+                  <div className="dist-bar">
+                    <div className="dist-fill" style={{ width: `${pct}%` }} />
+                  </div>
+                  <span className="dist-count">
+                    {count} ({pct.toFixed(1)}%)
+                  </span>
+                </div>
+              );
+            })}
           </div>
 
           <h2>Outcome Breakdown</h2>

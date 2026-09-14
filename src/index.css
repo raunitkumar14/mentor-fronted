@@ -68,6 +68,49 @@ body {
   color: #666;
 }
 
+.hint {
+  color: #666;
+  font-size: 0.85rem;
+  margin-top: -0.5rem;
+}
+
+.dist {
+  background: #fff;
+  border: 1px solid #e2e2e4;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.dist-row {
+  display: grid;
+  grid-template-columns: 70px 1fr 110px;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.85rem;
+}
+
+.dist-bar {
+  background: #eee;
+  border-radius: 4px;
+  height: 10px;
+  overflow: hidden;
+}
+
+.dist-fill {
+  background: #3b6ef6;
+  height: 100%;
+  border-radius: 4px;
+}
+
+.dist-count {
+  text-align: right;
+  color: #444;
+}
+
 table {
   width: 100%;
   border-collapse: collapse;

@@ -1,0 +1,81 @@
+body {
+  margin: 0;
+  font-family: system-ui, sans-serif;
+  background: #f7f7f8;
+  color: #1a1a1a;
+}
+
+.page {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem;
+}
+
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: end;
+  margin-bottom: 1.5rem;
+}
+
+.filters label {
+  display: flex;
+  flex-direction: column;
+  font-size: 0.85rem;
+  gap: 0.25rem;
+}
+
+.filters select,
+.filters input,
+.filters button {
+  padding: 0.5rem;
+  font-size: 0.95rem;
+}
+
+.filters button {
+  cursor: pointer;
+}
+
+.error {
+  color: #b00020;
+}
+
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.kpi-card {
+  background: #fff;
+  border: 1px solid #e2e2e4;
+  border-radius: 8px;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.kpi-value {
+  font-size: 1.75rem;
+  font-weight: 600;
+}
+
+.kpi-label {
+  font-size: 0.8rem;
+  color: #666;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+}
+
+th, td {
+  text-align: left;
+  padding: 0.5rem 0.75rem;
+  border-bottom: 1px solid #e2e2e4;
+}

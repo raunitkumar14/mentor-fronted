@@ -2,11 +2,11 @@
 name: Call Coverage
 description: A hairline-and-type instrument for reading CRM call coverage at a glance, with zero boxed cards and one accent.
 colors:
-  ink: "#0a0a0a"
+  ink: "#0f1115"
   ground: "#ffffff"
-  gray-quiet: "#6b6b6b"
-  gray-hairline: "#e3e3e0"
-  accent: "#c2410c"
+  gray-quiet: "#5b6472"
+  gray-hairline: "#e1e4ea"
+  accent: "#2563eb"
   accent-ink: "#ffffff"
 typography:
   headline:
@@ -71,9 +71,11 @@ This is an internal coverage instrument, not a SaaS dashboard. It refuses the bo
 
 The palette is intentionally starved: near-black ink on white ground (inverted in dark mode), two grays for quiet text and dividers, and exactly one accent used for the histogram fill, focus rings, selection, the primary button, and the error state — never a second hue anywhere, including error, which borrows the same accent rather than introducing red. Density is high and confident; nothing is padded out to look important, and the KPI grid holds nine metrics in fixed positions so a manager builds spatial memory of where each figure lives across repeated reviews.
 
+Light/dark no longer follows the OS preference alone — a Bright/Dark toggle in the topbar (`ThemeToggle.jsx`) lets a manager force either mode regardless of system setting, remembered per browser via `localStorage`. The OS preference still picks the default on a first visit.
+
 **Key Characteristics:**
 - Hairline dividers replace cards and shadows everywhere
-- Exactly one accent (burnt orange / light, warm amber / dark), no incidental colors
+- Exactly one accent (blue / light, lighter blue / dark), no incidental colors
 - Every metric value is tabular-mono; every label is sans
 - Fixed-position KPI grid — same cell holds the same stat every load
 - Radius is capped at 4px and reserved for the single interactive button
@@ -83,14 +85,16 @@ The palette is intentionally starved: near-black ink on white ground (inverted i
 The palette is deliberately narrow: ink, ground, two grays, and one accent — nothing else appears in the UI, in any state, including error.
 
 ### Primary
-- **Accent** (`#c2410c` light / `#fb923c` dark): the system's only color, reserved for signal, never for large surfaces. Used for the calls-per-lead histogram bars, focus-visible outlines, text-selection background, and the error-state message color.
+- **Accent** (`#2563eb` light / `#60a5fa` dark): the system's only color, reserved for signal, never for large surfaces. Used for the calls-per-lead histogram bars, focus-visible outlines, text-selection background, and the error-state message color.
 
 ### Neutral
-- **Ink** (`#0a0a0a` light / `#f2f2f0` dark): primary text, the topbar heading, the filled button background.
-- **Ground** (`#ffffff` light / `#0a0a0a` dark): page background, button text-on-ink.
-- **Gray, quiet** (`#6b6b6b` light / `#9a9a97` dark): secondary text — field labels, hints, distribution counts, empty states.
-- **Gray, hairline** (`#e3e3e0` light / `#262624` dark): every 1px divider, disabled-button fill, histogram track background.
-- **Accent-ink** (`#ffffff` light / `#0a0a0a` dark): text/selection color rendered on top of the accent (`::selection`).
+- **Ink** (`#0f1115` light / `#f3f4f6` dark): primary text, the topbar heading, the filled button background.
+- **Ground** (`#ffffff` light / `#0a0d12` dark): page background, button text-on-ink.
+- **Gray, quiet** (`#5b6472` light / `#969fac` dark): secondary text — field labels, hints, distribution counts, empty states.
+- **Gray, hairline** (`#e1e4ea` light / `#222630` dark): every 1px divider, disabled-button fill, histogram track background.
+- **Accent-ink** (`#ffffff` light / `#0a0d12` dark): text/selection color rendered on top of the accent (`::selection`).
+
+Which of the light/dark blocks above is active is decided by `data-theme` on `<html>` when the Bright/Dark toggle has been used, falling back to `prefers-color-scheme` on a first visit — see Navigation below.
 
 ### Named Rules
 **The One Accent Rule.** Exactly one accent color exists in this system. It is never duplicated as a second "error red" or "success green" — the error state (`.state-error`) reuses the same accent token. A screen that introduces a second hue for status is off-system.
@@ -150,7 +154,7 @@ This system has no card component. The KPI grid is a hairline-ruled table of cel
 - **Focus:** the shared 2px accent outline, offset 2px — same treatment as every other focusable element, no bespoke focus ring per input.
 
 ### Navigation
-No navigation exists — this is a single, un-routed view. The topbar holds only the page heading and the filter row (owner select, start/end date, Load button), separated from the body by one hairline.
+No navigation exists — this is a single, un-routed view. The topbar holds the page heading, a Bright/Dark theme toggle at its top-right (rendered with the same two-tab `.view-toggle` component as the Custom/Week/Month and Day-wise/Telecaller-wise switches elsewhere in the page, not a bespoke control), and the filter row (owner select, date range, Load button) — separated from the body by one hairline.
 
 ### Panels (two-up comparison layout)
 The system's one multi-column content pattern: two equal-width regions (`.panels > section`) separated by a single 1px vertical hairline, 40px padding on the inside edge of each. Reserved for content meant to be compared side by side, not for arbitrary two-column packing — currently the calls-per-lead histogram and the outcome table, both readings of the same underlying calls. Collapses to a stacked single column with a horizontal hairline below 900px; never crops or scrolls a panel independently.

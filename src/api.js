@@ -13,7 +13,22 @@ export function getOwners() {
   return request("/api/owners");
 }
 
-export function getMetrics({ ownerId, start, end }) {
-  const params = new URLSearchParams({ ownerId, start, end });
+export function getMetrics({ ownerIds, start, end }) {
+  const params = new URLSearchParams({ ownerIds: ownerIds.join(","), start, end });
   return request(`/api/metrics?${params}`);
+}
+
+export function getLeadTimeline({ ownerIds, start, end }) {
+  const params = new URLSearchParams({ ownerIds: ownerIds.join(","), start, end });
+  return request(`/api/lead-timeline?${params}`);
+}
+
+export function getCallAttemptsTimeline({ ownerIds, start, end }) {
+  const params = new URLSearchParams({ ownerIds: ownerIds.join(","), start, end });
+  return request(`/api/call-attempts-timeline?${params}`);
+}
+
+export function getCallAnalytics({ ownerIds, start, end }) {
+  const params = new URLSearchParams({ ownerIds: ownerIds.join(","), start, end });
+  return request(`/api/call-analytics?${params}`);
 }

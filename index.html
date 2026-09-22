@@ -4,6 +4,22 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>CRM Call-Coverage Dashboard</title>
+    <script>
+      // Applies a remembered manual theme choice before first paint, so the
+      // page never flashes the system-preference theme and then swaps to
+      // the stored one a moment later. ThemeToggle.jsx owns this the same
+      // way after mount.
+      (function () {
+        try {
+          var stored = localStorage.getItem("theme");
+          if (stored === "light" || stored === "dark") {
+            document.documentElement.setAttribute("data-theme", stored);
+          }
+        } catch (e) {
+          // Storage unavailable — page falls back to the OS preference.
+        }
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>

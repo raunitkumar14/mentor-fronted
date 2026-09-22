@@ -1,0 +1,22 @@
+{
+  "cfClass": {
+    "2918326": "Class 6",
+    "2918327": "Class 7",
+    "2918328": "Class 8",
+    "2918329": "Class 9",
+    "2918330": "Class 10",
+    "2918331": "Class 11",
+    "2918332": "Class 12",
+    "2918333": "Class 12 Pass"
+  },
+  "cfCourse": {
+    "2918335": "Foundation (Class 6-10)",
+    "2918336": "Engineering (IIT-JEE)",
+    "2918337": "Medical (NEET)",
+    "2918338": "Engineering (JEE Mains & Advanced)"
+  },
+  "cfExamMode": {
+    "2990220": "Offline",
+    "2990221": "Online"
+  }
+}

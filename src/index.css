@@ -1,10 +1,23 @@
 :root {
   --ground: #ffffff;
-  --ink: #0a0a0a;
-  --gray-1: #6b6b6b;
-  --gray-2: #e3e3e0;
-  --accent: #c2410c;
+  --ink: #0f1115;
+  --gray-1: #5b6472;
+  --gray-2: #e1e4ea;
+  --accent: #2563eb;
   --accent-ink: #ffffff;
+
+  /* Lead Dashboard categorical palette — dataviz skill's validated 8-hue
+     default (fixed order = the CVD-safety mechanism; never reorder or
+     cycle past 8). Re-validated against this app's own --ground/dark
+     surfaces with scripts/validate_palette.js — all hard checks pass. */
+  --series-1: #2a78d6;
+  --series-2: #eb6834;
+  --series-3: #1baf7a;
+  --series-4: #eda100;
+  --series-5: #e87ba4;
+  --series-6: #008300;
+  --series-7: #4a3aa7;
+  --series-8: #e34948;
 
   --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
   --font-mono: ui-monospace, "SF Mono", "SFMono-Regular", Menlo, Consolas,
@@ -20,13 +33,63 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --ground: #0a0a0a;
-    --ink: #f2f2f0;
-    --gray-1: #9a9a97;
-    --gray-2: #262624;
-    --accent: #fb923c;
-    --accent-ink: #0a0a0a;
+    --ground: #0a0d12;
+    --ink: #f3f4f6;
+    --gray-1: #969fac;
+    --gray-2: #222630;
+    --accent: #60a5fa;
+    --accent-ink: #0a0d12;
+
+    --series-1: #3987e5;
+    --series-2: #d95926;
+    --series-3: #199e70;
+    --series-4: #c98500;
+    --series-5: #d55181;
+    --series-6: #008300;
+    --series-7: #9085e9;
+    --series-8: #e66767;
   }
+}
+
+/* Explicit override from the theme toggle (ThemeToggle.jsx sets
+   data-theme on <html>) — both blocks mirror the media-query values above
+   so "Bright" and "Dark" work the same whether or not they match the OS
+   preference. Attribute selectors on :root outrank the plain :root inside
+   the media query, so these always win once a manual choice is made. */
+:root[data-theme="light"] {
+  --ground: #ffffff;
+  --ink: #0f1115;
+  --gray-1: #5b6472;
+  --gray-2: #e1e4ea;
+  --accent: #2563eb;
+  --accent-ink: #ffffff;
+
+  --series-1: #2a78d6;
+  --series-2: #eb6834;
+  --series-3: #1baf7a;
+  --series-4: #eda100;
+  --series-5: #e87ba4;
+  --series-6: #008300;
+  --series-7: #4a3aa7;
+  --series-8: #e34948;
+}
+
+:root[data-theme="dark"] {
+  --ground: #0a0d12;
+  --ink: #f3f4f6;
+  --gray-1: #969fac;
+  --gray-2: #222630;
+  --accent: #60a5fa;
+  --accent-ink: #0a0d12;
+
+  --series-1: #3987e5;
+  --series-2: #d95926;
+  --series-3: #199e70;
+  --series-4: #c98500;
+  --series-5: #d55181;
+  --series-6: #008300;
+  --series-7: #9085e9;
+  --series-8: #e66767;
 }
 
 * {
@@ -82,7 +145,7 @@ html {
 .page {
   max-width: 1320px;
   margin: 0 auto;
-  padding: var(--space-5) var(--space-4) var(--space-6);
+  padding: var(--space-4) var(--space-4) var(--space-5);
 }
 
 /* ---------- header + filters ---------- */
@@ -93,11 +156,23 @@ html {
   margin-bottom: var(--space-5);
 }
 
+.topbar-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+}
+
 .topbar h1 {
-  margin: 0 0 var(--space-4);
+  margin: 0;
   font-size: 1.25rem;
   font-weight: 600;
   letter-spacing: -0.01em;
+}
+
+.theme-toggle {
+  flex-shrink: 0;
 }
 
 .filters {
@@ -143,6 +218,41 @@ html {
   border-bottom-color: var(--gray-1);
 }
 
+.range-nav-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.range-nav-controls {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-1) 0;
+}
+
+.range-nav-arrow {
+  background: none;
+  border: 1px solid var(--gray-2);
+  color: var(--ink);
+  border-radius: 4px;
+  width: 24px;
+  height: 24px;
+  line-height: 1;
+  font-size: 0.95rem;
+  cursor: pointer;
+}
+
+.range-nav-arrow:hover {
+  border-color: var(--gray-1);
+}
+
+.range-nav-label {
+  font-size: 0.9rem;
+  min-width: 148px;
+  text-align: center;
+}
+
 .btn {
   border: 1px solid var(--ink);
   background: var(--ink);
@@ -178,41 +288,111 @@ html {
   color: var(--accent);
 }
 
-/* ---------- stat grid ---------- */
-
-.stat-grid {
-  display: grid;
-  /* Wide desktop: all nine KPIs read as one ledger row — a manager
-     scans left to right instead of down a tall stack of cards. */
-  grid-template-columns: repeat(9, 1fr);
-  border-top: 1px solid var(--gray-2);
-  border-left: 1px solid var(--gray-2);
-  margin-bottom: var(--space-6);
+/* Top-of-page mode switch: everything below it (charts and their
+   telecaller-wise table equivalents) reads off this one control instead of
+   each section carrying its own toggle. */
+.page-view-toggle {
+  margin: var(--space-4) 0 0;
+  padding-bottom: var(--space-3);
 }
 
-.stat {
-  border-right: 1px solid var(--gray-2);
-  border-bottom: 1px solid var(--gray-2);
-  padding: var(--space-3);
+/* ---------- stat grid ---------- */
+
+/* Leads Assigned and Calls Attempted share one row, sized to fit the
+   dashboard width without scrolling — two equal-width cards down to
+   ~640px, then they stack single-column on phones. */
+.stat-groups-row {
   display: flex;
-  flex-direction: column;
-  gap: var(--space-1);
+  flex-flow: row wrap;
+  align-items: stretch;
+  gap: var(--space-2);
+  margin-bottom: var(--space-4);
+}
+
+.stat-groups-row .stat-card {
+  flex: 1 1 320px;
   min-width: 0;
 }
 
+/* Title sits above the border, outside the box it labels. */
+.stat-card {
+  display: flex;
+  flex-direction: column;
+}
+
+.stat-card .stat-group-label {
+  margin-left: 2px;
+}
+
+.stat-box {
+  padding: var(--space-1) 0;
+}
+
+.stat-groups {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  margin-bottom: var(--space-5);
+}
+
+.stat-group-label {
+  display: block;
+  font-size: 0.62rem;
+  color: var(--gray-1);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  margin-bottom: 2px;
+}
+
+.stat-grid {
+  display: flex;
+  /* Every metric in one horizontal row instead of wrapping into a grid —
+     each stat shrinks equally (flex: 1 1 0 below) to fit the card's
+     width rather than the row breaking onto multiple lines. */
+  flex-flow: row nowrap;
+}
+
+.stat {
+  flex: 1 1 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+  padding: 0 var(--space-2);
+}
+
+.stat:first-child {
+  padding-left: 0;
+}
+
+.stat:last-child {
+  padding-right: 0;
+}
+
+/* Light divider between metrics — no outer box border, just this. */
+.stat + .stat {
+  border-left: 1px solid var(--gray-2);
+}
+
 .stat-label {
-  font-size: 0.72rem;
+  font-size: 0.58rem;
   color: var(--gray-1);
   text-transform: uppercase;
   letter-spacing: 0.03em;
 }
 
 .stat-value {
-  font-size: 1.5rem;
+  font-size: 0.9rem;
   font-weight: 500;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+@media (max-width: 760px) {
+  .stat-groups-row .stat-card {
+    flex-basis: 100%;
+  }
 }
 
 /* ---------- section titles ---------- */
@@ -223,31 +403,10 @@ html {
   margin: 0 0 var(--space-1);
 }
 
-.hint {
+.section-subtitle {
+  font-size: 0.8rem;
   color: var(--gray-1);
-  font-size: 0.82rem;
-  margin: 0 0 var(--space-3);
-  max-width: 60ch;
-}
-
-/* ---------- panels (calls-per-lead + outcome, side by side) ---------- */
-
-.panels {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-}
-
-.panels > section {
-  padding: 0 var(--space-5);
-}
-
-.panels > section:first-child {
-  padding-left: 0;
-  border-right: 1px solid var(--gray-2);
-}
-
-.panels > section:last-child {
-  padding-right: 0;
+  margin: 0;
 }
 
 /* ---------- calls-per-lead distribution ---------- */
@@ -297,8 +456,17 @@ table {
 
 th, td {
   text-align: left;
-  padding: var(--space-2) 0;
+  padding: var(--space-2) var(--space-3);
   border-bottom: 1px solid var(--gray-2);
+}
+
+/* A hairline between every column — once a table has a date per column
+   (or a bucket per column), nothing but whitespace used to separate one
+   day's figure from the next; a plain vertical rule reads as a column
+   boundary without competing with the Total column's accent styling. */
+th + th,
+td + td {
+  border-left: 1px solid var(--gray-2);
 }
 
 th {
@@ -314,6 +482,30 @@ th:last-child {
   text-align: right;
 }
 
+/* A trailing Total column/row, summed client-side from the same per-cell
+   figures the table already shows. The accent — the system's one signal
+   color — marks it as a derived sum rather than another data row; the
+   header cell stays ink instead of the usual quiet gray-1 label color so
+   the column reads as distinct all the way up. */
+.table-total-cell {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.table-total-header {
+  color: var(--ink);
+}
+
+tfoot td {
+  font-weight: 600;
+  border-top: 2px solid var(--ink);
+  border-bottom: none;
+}
+
+tfoot td.num {
+  color: var(--accent);
+}
+
 .empty {
   color: var(--gray-1);
   font-size: 0.85rem;
@@ -321,50 +513,812 @@ th:last-child {
   border-top: 1px solid var(--gray-2);
 }
 
+/* Two-row header for a table whose columns split into named groups (e.g.
+   Incoming/Outgoing outcome counts) — the group label centers over its
+   span instead of inheriting the plain left/right rule meant for a single
+   leaf column, and a heavier rule (vs. the standard 1px hairline every
+   column already gets) marks where one group's columns end and the next
+   begins, carried down through the body and footer so the grouping still
+   reads once the header has scrolled out of view. */
+.col-group-header {
+  text-align: center;
+}
+
+.col-group-divider {
+  border-left: 2px solid var(--gray-1);
+}
+
+/* This table has 8 columns (vs. 4-6 elsewhere) under the same two-level
+   header, so it gets its own tighter padding/type scale rather than
+   shrinking every table in the app — more columns fit before
+   `.timeline-table-wrap`'s horizontal scroll ever kicks in. */
+.outcome-date-table th,
+.outcome-date-table td {
+  padding: var(--space-1) var(--space-2);
+  font-size: 0.8rem;
+}
+
+.outcome-date-table th {
+  font-size: 0.66rem;
+}
+
+/* ---------- owner multi-select ---------- */
+
+.owner-select {
+  position: relative;
+}
+
+.owner-select-trigger {
+  display: block;
+  background: transparent;
+  color: var(--ink);
+  border: none;
+  border-bottom: 1px solid var(--gray-2);
+  border-radius: 0;
+  padding: var(--space-1) var(--space-2) var(--space-1) 0;
+  font: inherit;
+  font-size: 0.9rem;
+  cursor: pointer;
+  max-width: 180px;
+  text-align: left;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.owner-select-trigger:hover {
+  border-bottom-color: var(--gray-1);
+}
+
+.owner-select-panel {
+  position: absolute;
+  z-index: 10;
+  top: calc(100% + var(--space-1));
+  left: 0;
+  min-width: 200px;
+  max-height: 260px;
+  overflow-y: auto;
+  background: var(--ground);
+  border: 1px solid var(--gray-2);
+  padding: var(--space-1) 0;
+  margin: 0;
+  list-style: none;
+}
+
+.owner-select-option {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-1) var(--space-3);
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.owner-select-option:hover {
+  background: var(--gray-2);
+}
+
+.owner-select-option input {
+  accent-color: var(--accent);
+}
+
+/* ---------- custom date range calendar ---------- */
+
+.cal-picker {
+  position: relative;
+}
+
+.cal-picker-trigger {
+  max-width: 220px;
+}
+
+.cal-picker-panel {
+  position: absolute;
+  z-index: 10;
+  top: calc(100% + var(--space-1));
+  left: 0;
+  width: 264px;
+  background: var(--ground);
+  border: 1px solid var(--gray-2);
+  padding: var(--space-3);
+}
+
+.cal-picker-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-2);
+}
+
+.cal-picker-month {
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.cal-picker-weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  margin-bottom: var(--space-1);
+}
+
+.cal-picker-weekdays span {
+  text-align: center;
+  font-size: 0.7rem;
+  color: var(--gray-1);
+}
+
+.cal-picker-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
+}
+
+.cal-picker-day {
+  background: none;
+  border: none;
+  border-radius: 4px;
+  color: var(--ink);
+  font: inherit;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  padding: var(--space-1) 0;
+  cursor: pointer;
+}
+
+.cal-picker-day:hover {
+  background: var(--gray-2);
+}
+
+.cal-picker-day-out {
+  color: var(--gray-2);
+}
+
+.cal-picker-day-in-range {
+  background: var(--gray-2);
+  border-radius: 0;
+}
+
+.cal-picker-day-endpoint {
+  background: var(--accent);
+  color: var(--accent-ink);
+  border-radius: 4px;
+  font-weight: 600;
+}
+
+.cal-picker-day-today:not(.cal-picker-day-endpoint) {
+  box-shadow: inset 0 0 0 1px var(--gray-1);
+}
+
+.cal-picker-hint {
+  margin-top: var(--space-2);
+  font-size: 0.75rem;
+  color: var(--gray-1);
+  text-align: center;
+}
+
+.owner-select-all {
+  position: sticky;
+  top: 0;
+  background: var(--ground);
+  border-bottom: 1px solid var(--gray-2);
+  margin-bottom: var(--space-1);
+}
+
+.owner-select-all .owner-select-option {
+  font-weight: 600;
+}
+
+/* ---------- lead assignment & connection timeline ---------- */
+
+.timeline-section {
+  margin-top: var(--space-5);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--gray-2);
+}
+
+/* Lead-assignment and attempted-calls charts read as one paired view of the
+   same date range — sharing a single top border/gap instead of stacking two
+   full section chromes cuts a whole section's worth of vertical space. */
+.chart-grid {
+  margin-top: var(--space-5);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--gray-2);
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-5);
+}
+
+.chart-grid .timeline-section {
+  margin-top: 0;
+  padding-top: 0;
+  border-top: none;
+  /* Grid items default to min-width: auto, which lets a chart's intrinsic
+     content width (many days wide) push the whole column — and the page —
+     wider instead of scrolling inside .chart-scroll. Pinning this to 0
+     hands overflow back to .chart-scroll, where it belongs. */
+  min-width: 0;
+  /* The grid row itself already stretches both columns to equal height
+     (align-items: stretch is the grid default) — but that's an invisible
+     box height. Lead Assignment's header+legend is one row shorter than
+     Attempted Calls' (no extra total line), so without this the two
+     charts would start at different Y positions even though their
+     columns are the same height.
+     Pushing the chart itself to the bottom of the flex column closes that
+     gap above it instead, and since both charts share the same fixed
+     220px height, that bottom-alignment makes their tops line up too. */
+  display: flex;
+  flex-direction: column;
+}
+
+.chart-grid .timeline-section > .chart-scroll,
+.chart-grid .timeline-section > .timeline-table-wrap,
+.chart-grid .timeline-section > .empty {
+  margin-top: auto;
+}
+
+@media (min-width: 1180px) {
+  .chart-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.timeline-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-bottom: var(--space-3);
+}
+
+.view-toggle {
+  display: flex;
+  gap: var(--space-4);
+  flex-shrink: 0;
+}
+
+.view-toggle-btn {
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  color: var(--gray-1);
+  font: inherit;
+  font-size: 0.82rem;
+  font-weight: 600;
+  padding: var(--space-1) 0;
+  cursor: pointer;
+}
+
+.view-toggle-btn.active {
+  color: var(--ink);
+  border-bottom-color: var(--accent);
+}
+
+.timeline-legend {
+  display: flex;
+  gap: var(--space-4);
+  margin-bottom: var(--space-3);
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  font-size: 0.8rem;
+  color: var(--gray-1);
+}
+
+/* The summed total riding along in the same legend row, rather than a
+   separate line — no swatch, a hairline divider ahead of it instead, and
+   its figure in accent so it reads as a derived signal, not another
+   category. */
+.legend-item-total {
+  font-weight: 600;
+  color: var(--ink);
+  padding-left: var(--space-3);
+  border-left: 1px solid var(--gray-2);
+}
+
+.legend-item-total .num {
+  color: var(--accent);
+}
+
+.legend-swatch {
+  width: 10px;
+  height: 10px;
+  display: inline-block;
+  margin-right: var(--space-1);
+  vertical-align: middle;
+}
+
+.legend-swatch-connected {
+  background: var(--accent);
+}
+
+.legend-swatch-not-connected {
+  background: var(--gray-1);
+}
+
+.chart-scroll {
+  overflow-x: auto;
+  padding-bottom: var(--space-2);
+}
+
+.chart-plot {
+  position: relative;
+}
+
+.chart-gridline {
+  stroke: var(--gray-2);
+  stroke-width: 1;
+}
+
+.chart-axis-label {
+  fill: var(--gray-1);
+  font-family: var(--font-mono);
+  font-size: 10px;
+}
+
+.bar-connected {
+  fill: var(--accent);
+}
+
+.bar-not-connected,
+.bar-neutral {
+  fill: var(--gray-1);
+}
+
+.legend-swatch-accent {
+  background: var(--accent);
+}
+
+.legend-swatch-neutral {
+  background: var(--gray-1);
+}
+
+.chart-tooltip {
+  position: absolute;
+  transform: translate(-50%, calc(-100% - 8px));
+  background: var(--ink);
+  color: var(--ground);
+  padding: var(--space-2) var(--space-3);
+  font-size: 0.78rem;
+  white-space: nowrap;
+  pointer-events: none;
+  z-index: 5;
+}
+
+.chart-tooltip-date {
+  font-weight: 600;
+  margin-bottom: var(--space-1);
+}
+
+.chart-tooltip-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  justify-content: space-between;
+}
+
+.chart-tooltip-total {
+  margin-top: var(--space-1);
+  padding-top: var(--space-1);
+  border-top: 1px solid var(--gray-1);
+  font-weight: 600;
+}
+
+.timeline-table-wrap {
+  overflow-x: auto;
+}
+
+.timeline-table-wrap table {
+  min-width: 100%;
+}
+
+/* Scoped to the header's first ROW (not just "the first `th` in any
+   `<tr>`") because a two-level grouped header's second row doesn't repeat
+   the Date/rowspan column — its own first `<th>` is the first group's
+   first sub-column, which must NOT get pinned to the scroll edge. */
+.timeline-table-wrap thead tr:first-child > th:first-child,
+.timeline-table-wrap td:first-child {
+  position: sticky;
+  left: 0;
+  background: var(--ground);
+  white-space: nowrap;
+  padding-right: var(--space-3);
+  text-align: left;
+}
+
+.table-cell-legend {
+  font-size: 0.78rem;
+  color: var(--gray-1);
+  margin: 0 0 var(--space-2);
+}
+
+/* A cell that carries two figures (e.g. assigned + connected) instead of
+   one — the primary number keeps the table's usual weight/color so the
+   sheet still scans like a normal count table; the secondary number sits
+   quieter underneath, same treatment as a legend swatch's caption. Both
+   spans are block-level so they stack top-to-bottom while inheriting the
+   cell's own text-align (left for a day column, right for the Total
+   column) instead of forcing one direction. */
+.cell-stack {
+  line-height: 1.3;
+}
+
+.cell-stack .cell-primary,
+.cell-stack .cell-secondary {
+  display: block;
+}
+
+.cell-secondary {
+  font-size: 0.75rem;
+  font-weight: 400;
+  color: var(--gray-1);
+}
+
+.table-total-cell.cell-stack .cell-secondary {
+  color: var(--accent);
+  opacity: 0.7;
+}
+
+/* ---------- call analytics (three-part subsection) ---------- */
+
+.analytics-subsection {
+  margin-top: var(--space-5);
+}
+
+/* Calls per Lead and Call Duration are both compact widgets — pairing them
+   side by side (Connected Rate stays full-width below since its row count
+   grows with the number of selected owners) avoids a third full vertical
+   stack inside this section. */
+.analytics-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-4) var(--space-5);
+  margin-top: var(--space-4);
+}
+
+.analytics-grid .analytics-subsection {
+  margin-top: 0;
+  min-width: 0;
+  /* Both columns' headers (title + one total line) are already the same
+     height, so unlike .chart-grid the gap between them comes from the
+     content itself — a short 4-row bucket list versus a ~200px chart.
+     Centering the shorter one in the stretched row reads more intentional
+     than gluing it to the top (big gap below) or bottom (floating away
+     from its own "Total" line above it). */
+  display: flex;
+  flex-direction: column;
+}
+
+.analytics-grid .analytics-subsection > .dist,
+.analytics-grid .analytics-subsection > .chart-scroll,
+.analytics-grid .analytics-subsection > .empty {
+  margin-top: auto;
+  margin-bottom: auto;
+}
+
+@media (min-width: 900px) {
+  .analytics-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.subsection-title {
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin: 0 0 var(--space-1);
+}
+
+.analysis-total {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--ink);
+  margin: 0 0 var(--space-2);
+  padding-left: var(--space-2);
+  border-left: 2px solid var(--accent);
+}
+
+.analysis-total .num {
+  color: var(--accent);
+}
+
 /* ---------- responsive ---------- */
 
-@media (max-width: 1180px) {
-  .stat-grid {
-    grid-template-columns: repeat(5, 1fr);
-  }
-}
-
-@media (max-width: 900px) {
-  .stat-grid {
-    grid-template-columns: repeat(3, 1fr);
-  }
-
-  /* Panels stop fitting comfortably side by side — stack them and
-     swap the vertical divider for the page's usual horizontal one. */
-  .panels {
-    grid-template-columns: 1fr;
-  }
-
-  .panels > section {
-    padding: 0;
-  }
-
-  .panels > section:first-child {
-    border-right: none;
-    border-bottom: 1px solid var(--gray-2);
-    padding-bottom: var(--space-5);
-    margin-bottom: var(--space-5);
-  }
-}
-
 @media (max-width: 640px) {
-  .stat-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
   .dist-row {
     grid-template-columns: 32px 1fr 76px;
     gap: var(--space-2);
   }
 }
 
-@media (max-width: 420px) {
-  .stat-grid {
+/* ---------- app nav (shared across pages) ---------- */
+
+.app-nav {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: var(--space-3) var(--space-4) 0;
+}
+
+.app-nav-link {
+  color: var(--gray-1);
+  text-decoration: none;
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding-bottom: var(--space-2);
+  border-bottom: 2px solid transparent;
+}
+
+.app-nav-link:hover {
+  color: var(--ink);
+}
+
+.app-nav-link.active {
+  color: var(--ink);
+  border-bottom-color: var(--accent);
+}
+
+/* ---------- lead dashboard ---------- */
+
+.lead-dashboard-desc {
+  margin: 0 0 var(--space-4);
+}
+
+/* ---------- lead dashboard: side filter panel ---------- */
+
+/* Narrow and fixed-width by design — every filter besides Date lives here
+   instead of at the top, but the panel must not eat into the space the
+   charts get, so it stays compact rather than growing with its content. */
+.lead-dashboard-body {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-5);
+}
+
+.lead-filter-panel {
+  flex: 0 0 200px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-3);
+  border: 1px solid var(--gray-2);
+  border-radius: 6px;
+  position: sticky;
+  top: var(--space-3);
+}
+
+.lead-filter-panel .field select,
+.lead-filter-panel .owner-select-trigger {
+  max-width: none;
+  width: 100%;
+}
+
+.lead-filter-panel-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  padding-bottom: var(--space-2);
+  border-bottom: 1px solid var(--gray-2);
+}
+
+.lead-filter-panel-head h2 {
+  margin: 0;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.lead-filter-reset {
+  background: none;
+  border: none;
+  color: var(--accent);
+  font: inherit;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0;
+}
+
+.lead-filter-reset:hover {
+  opacity: 0.8;
+}
+
+.lead-dashboard-main {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+@media (max-width: 900px) {
+  .lead-dashboard-body {
+    flex-direction: column;
+  }
+
+  .lead-filter-panel {
+    flex: 1 1 auto;
+    width: 100%;
+    position: static;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: flex-end;
+  }
+
+  .lead-filter-panel-head {
+    flex: 1 1 100%;
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+
+  .lead-filter-panel .field,
+  .lead-filter-panel .owner-select {
+    flex: 1 1 160px;
+  }
+}
+
+.lead-summary-row {
+  display: flex;
+  flex-flow: row wrap;
+  gap: var(--space-2);
+  margin-bottom: var(--space-5);
+}
+
+.lead-summary-card {
+  flex: 1 1 200px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  padding: var(--space-3);
+  border: 1px solid var(--gray-2);
+  border-radius: 6px;
+}
+
+.lead-summary-value {
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+/* ---------- lead dashboard: donut row (OTP / exam mode / registration) ---------- */
+
+.lead-donut-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-4);
+  margin-bottom: var(--space-5);
+}
+
+@media (max-width: 900px) {
+  .lead-donut-row {
     grid-template-columns: 1fr;
+  }
+}
+
+.donut-chart {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+}
+
+.donut-chart svg {
+  flex-shrink: 0;
+}
+
+.donut-center-value {
+  fill: var(--ink);
+  font-size: 1.05rem;
+  font-weight: 700;
+}
+
+.donut-center-label {
+  fill: var(--gray-1);
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.donut-legend {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  flex: 1 1 140px;
+  min-width: 0;
+}
+
+.donut-legend-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-1) var(--space-2);
+  border-radius: 4px;
+  cursor: default;
+}
+
+.donut-legend-item.active {
+  background: var(--gray-2);
+}
+
+.donut-legend-item .legend-swatch {
+  flex-shrink: 0;
+  border-radius: 2px;
+}
+
+.donut-legend-label {
+  font-size: 0.8rem;
+  color: var(--ink);
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow-wrap: break-word;
+}
+
+.donut-legend-value {
+  font-size: 0.78rem;
+  color: var(--gray-1);
+  white-space: nowrap;
+}
+
+/* ---------- lead dashboard: horizontal bars (course / class) ---------- */
+
+.lead-bar-row {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-5);
+}
+
+@media (max-width: 900px) {
+  .lead-bar-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+.hbar-chart {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin-top: var(--space-3);
+}
+
+.hbar-row {
+  display: grid;
+  grid-template-columns: 180px 1fr 72px;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.hbar-label {
+  font-size: 0.8rem;
+  color: var(--ink);
+  overflow-wrap: break-word;
+  line-height: 1.3;
+}
+
+.hbar-track {
+  background: var(--gray-2);
+  height: 16px;
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.hbar-fill {
+  height: 100%;
+  border-radius: 3px;
+}
+
+.hbar-value {
+  text-align: right;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+@media (max-width: 640px) {
+  .hbar-row {
+    grid-template-columns: 110px 1fr 60px;
+    gap: var(--space-2);
   }
 }
